@@ -82,4 +82,10 @@ def cleanup(value):
 df['Longitude'] = df['col25'].apply(cleanup)
 df['Latitude']  = df['col23'].apply(cleanup)
 
-gpd.GeoDataFrame(df,  geometry=gpd.points_from_xy(df.Longitude, df.Latitude)).to_file(r"Romania_crawl.shp")
+DF = gpd.GeoDataFrame(df,  geometry=gpd.points_from_xy(df.Longitude, df.Latitude))
+DF.to_file(r"Romania_crawl.shp")
+
+#spatial join with countries to get country name
+world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+
+gpd.sjoin(DF,world)
