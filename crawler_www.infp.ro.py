@@ -65,4 +65,21 @@ for page in range(1,MaxPages):
 cols=['col'+str(i) for i in range(0,len((rowtotal)))]
 df=pd.DataFrame(res,columns=cols)        
 
-df.to_csv(r'Romania_crawl_en.csv')
+# df.to_csv(r'Romania_crawl_en.csv')
+
+df.to_csv(r'Romania_crawl_en.csv', encoding='utf-8-sig')
+
+#conda install geopandas
+import geopandas as gpd
+
+def cleanup(value):
+    chars='NWVES°'+chr(176)
+    for char in chars:
+        value=value.replace(char,"")
+    return float(value)
+
+
+df['Longitude'] = df['col25'].apply(cleanup)
+df['Latitude']  = df['col23'].apply(cleanup)
+
+gpd.GeoDataFrame(df,  geometry=gpd.points_from_xy(df.Longitude, df.Latitude)).to_file(r"Romania_crawl.shp")
